@@ -190,9 +190,6 @@ class BigramCoherence:
 
         self.discriminator.train(False)
 
-        print("\n\nIn Evaluate_dis")
-        print(f"DF. columns: {df.columns}")
-
         for article in test:
             sentences = df.loc[article[0], "sentences"].split("<PUNC>")
             sent_num = len(sentences)
@@ -242,9 +239,6 @@ class BigramCoherence:
             # print(" ".join(sentences), mean_pos_score)
             # print(" ".join(neg_sentences), mean_neg_score)
         self.discriminator.train(True)
-        print(f"Correct pred [0]: {correct_pred[0]}")
-        x = sum([1 if 0 < pred < 1 else 1 for pred in correct_pred])
-        print(f"Number of OUB: {x}")
         accs = np.true_divide(correct_pred, total_samples)
         acc = np.true_divide(np.sum(correct_pred), np.sum(total_samples))
 
@@ -253,6 +247,8 @@ class BigramCoherence:
             all_neg_scores = np.concatenate(all_neg_scores)
 
             import pandas as pd
+
+            print("\n\nIn Evaluate_dis")
 
             print("pos score stats")
             print(pd.DataFrame(all_pos_scores).describe())

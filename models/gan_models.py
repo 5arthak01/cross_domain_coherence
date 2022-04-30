@@ -53,6 +53,7 @@ class MLP(nn.Module):
                 layers["bn{}".format(l_i)] = nn.BatchNorm1d(n_hidden)
             current_dims = n_hidden
         layers["out"] = nn.Linear(current_dims, n_class)
+        layers["result"] = torch.sigmoid()
 
         self.model = nn.Sequential(layers)
 

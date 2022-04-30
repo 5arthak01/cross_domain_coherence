@@ -105,7 +105,7 @@ def run_bigram_coherence(args):
     #     return
 
     print_current_time()
-    print(test_df.head())
+    # print(test_df.head())
     print("Results for discrimination:")
     # print(f"Test data. Shape: {test_dataset.shape}. Example: \n{test_dataset[0]}\n")
     dis_acc = model.evaluate_dis(test_dataloader, test_df, debug=True)
