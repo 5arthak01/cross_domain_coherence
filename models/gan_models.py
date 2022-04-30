@@ -99,8 +99,8 @@ class MLP_Discriminator(nn.Module):
             )
             backward_scores = self.backward_mlp(self.backward_dropout(backward_inputs))
             scores = (scores + backward_scores) / 2
-        print("In MLP_Discriminator ")
-        print(f"Scores (type: {type(scores)} ): {scores}")
+        # print("In MLP_Discriminator ")
+        # print(f"Scores (type: {type(scores)} ): {scores}")
         return scores
 
 

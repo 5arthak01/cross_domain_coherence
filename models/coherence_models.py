@@ -189,6 +189,11 @@ class BigramCoherence:
             all_neg_scores = []
 
         self.discriminator.train(False)
+
+        print("In Evaluate_dis")
+        print(f"Test data. Shape: {test.shape}. Example: \n{test[0]}\n")
+        print(f"DF. columns: {df.columns}")
+
         for article in test:
             sentences = df.loc[article[0], "sentences"].split("<PUNC>")
             sent_num = len(sentences)
@@ -242,6 +247,8 @@ class BigramCoherence:
         acc = np.true_divide(np.sum(correct_pred), np.sum(total_samples))
 
         if debug:
+            print("evaluate_dis DEBUG")
+
             all_pos_scores = np.concatenate(all_pos_scores)
             all_neg_scores = np.concatenate(all_neg_scores)
 

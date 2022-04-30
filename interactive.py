@@ -15,6 +15,7 @@ from datetime import datetime
 import pickle
 
 SAVED_GLOVE = True
+PRETRAINED_MODEL = True
 
 
 def print_current_time():
@@ -22,7 +23,7 @@ def print_current_time():
 
 
 def run_bigram_coherence(args):
-    # logging.info("Loading data...")
+    logging.info("Loading data...")
     if args.data_name not in config.DATASET:
         raise ValueError("Invalid data name!")
     dataset = DataSet(config.DATASET[args.data_name])
@@ -66,7 +67,7 @@ def run_bigram_coherence(args):
         raise ValueError("Invalid sent encoder name!")
 
     # logging.info("Training BigramCoherence model...")
-    # print("Training BigramCoherence model...")
+    print("Training BigramCoherence model...")
     print_current_time()
     kwargs = {
         "embed_dim": embed_dim,
@@ -87,42 +88,36 @@ def run_bigram_coherence(args):
         },
     }
 
-    model = BigramCoherence(**kwargs)
-    model.init()
-    best_step, valid_acc = model.fit(train_dataloader, valid_dataloader, valid_df)
-    if args.save:
-        model_path = os.path.join(
-            config.CHECKPOINT_PATH, "%s-%.4f" % (args.data_name, valid_acc)
-        )
-        # model.save(model_path)
-        torch.save(model, model_path + ".pth")
-    model.load_best_state()
+    if PRETRAINED_MODEL:
+        model = torch.load("data/bigram_coherence_model.pt")
+        model.load_best_state()
+    else:
+        model = BigramCoherence(**kwargs)
+        model.init()
+        model.fit(train_dataloader, valid_dataloader, valid_df)
+        # model_path = os.path.join(
+        #     config.CHECKPOINT_PATH, "%s-%.4f" % (args.data_name, valid_acc)
+        # )
+        torch.save(model, "data/bigram_coherence_model.pt")
+        model.load_best_state()
 
-    # dataset = DataSet(config.DATASET["wsj_bigram"])
-    # test_dataset = dataset.load_test()
-    # test_dataloader = DataLoader(dataset=test_dataset, batch_size=1, shuffle=False)
-    # test_df = dataset.load_test_perm()
-    # if args.sent_encoder == "infersent":
-    #    model.sent_encoder = get_infersent("wsj_bigram", if_sample=args.test)
-    # elif args.sent_encoder == "average_glove":
-    #    model.sent_encoder = get_average_glove("wsj_bigram", if_sample=args.test)
-    # else:
-    #    model.sent_encoder = get_lm_hidden("wsj_bigram", "lm_" + args.data_name, corpus)
+    # if input("\n\n\tCONTINUE ? (y/n)") != "y":
+    #     return
+
     print_current_time()
     print("Results for discrimination:")
-    # logging.info("Results for discrimination:")
-    dis_acc = model.evaluate_dis(test_dataloader, test_df)
+    dis_acc = model.evaluate_dis(test_dataloader, test_df, debug=True)
     print("Test Acc:", dis_acc)
     # logging.info("Disc Accuracy: {}".format(dis_acc[0]))
 
-    print_current_time()
-    print("Results for insertion:")
-    # logging.info("Results for insertion:")
-    ins_acc = model.evaluate_ins(test_dataloader, test_df)
-    print("Test Acc:", ins_acc)
-    # logging.info("Insert Accuracy: {}".format(ins_acc[0]))
+    # print_current_time()
+    # print("Results for insertion:")
+    # # logging.info("Results for insertion:")
+    # ins_acc = model.evaluate_ins(test_dataloader, test_df)
+    # print("Test Acc:", ins_acc)
+    # # logging.info("Insert Accuracy: {}".format(ins_acc[0]))
 
-    return dis_acc, ins_acc
+    # return dis_acc, ins_acc
 
 
 if __name__ == "__main__":
