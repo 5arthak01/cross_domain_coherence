@@ -191,7 +191,6 @@ class BigramCoherence:
         self.discriminator.train(False)
 
         print("In Evaluate_dis")
-        print(f"Test data. Shape: {test.shape}. Example: \n{test[0]}\n")
         print(f"DF. columns: {df.columns}")
 
         for article in test:

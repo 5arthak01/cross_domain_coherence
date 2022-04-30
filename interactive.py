@@ -106,6 +106,7 @@ def run_bigram_coherence(args):
 
     print_current_time()
     print("Results for discrimination:")
+    print(f"Test data. Shape: {test_dataset.shape}. Example: \n{test_dataset[0]}\n")
     dis_acc = model.evaluate_dis(test_dataloader, test_df, debug=True)
     print("Test Acc:", dis_acc)
     # logging.info("Disc Accuracy: {}".format(dis_acc[0]))
